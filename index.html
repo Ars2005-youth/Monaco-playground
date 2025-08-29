@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monaco Editor on iPad</title>
+  <style>
+    body, html { margin: 0; height: 100%; }
+    #container { width: 100%; height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  
+  <!-- Load Monaco Editor -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
+  <script>
+    require.config({ paths: { vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs" }});
+    require(["vs/editor/editor.main"], function () {
+      monaco.editor.create(document.getElementById("container"), {
+        value: [
+          "function hello() {",
+          "\tconsole.log('Hello, iPad + Monaco!');",
+          "}"
+        ].join("\n"),
+        language: "javascript",
+        theme: "vs-dark"
+      });
+    });
+  </script>
+</body>
+</html>
