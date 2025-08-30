@@ -2,56 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Monaco Editor on iPad</title>
-  <style>
-    body, html { margin: 0; height: 100%; display: flex; flex-direction: column; }
-    #toolbar { padding: 8px; background: #222; color: white; }
-    #toolbar button { margin-right: 8px; padding: 6px 12px; }
-    #container { flex: 1; }
-  </style>
+  <title>My C++ Online Editor</title>
 </head>
 <body>
-  <!-- Toolbar with buttons -->
-  <div id="toolbar">
-    <button onclick="saveCode()">💾 Save</button>
-    <button onclick="loadCode()">📂 Load</button>
-  </div>
+  <h1>C++ Online Editor</h1>
 
-  <!-- Editor container -->
-  <div id="container"></div>
+  <textarea id="code" rows="15" cols="60">// Write your C++ code here
+#include <iostream>
+using namespace std;
 
-  <!-- Load Monaco Editor -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
+int main() {
+    cout << "Hello from iPad!" << endl;
+    return 0;
+}
+  </textarea>
+  <br>
+  <button onclick="runCode()">Run</button>
+
+  <pre id="output"></pre>
+
   <script>
-    let editor;
+    async function runCode() {
+      const code = document.getElementById("code").value;
 
-    require.config({ paths: { vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs" }});
-    require(["vs/editor/editor.main"], function () {
-      editor = monaco.editor.create(document.getElementById("container"), {
-        value: [
-          "function hello() {",
-          "\tconsole.log('Hello, iPad + Monaco!');",
-          "}"
-        ].join("\n"),
-        language: "javascript",
-        theme: "vs-dark"
+      const response = await fetch("http://192.168.1.5:3000/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
       });
 
-      // Auto-load saved code if available
-      loadCode();
-    });
-
-    function saveCode() {
-      const code = editor.getValue();
-      localStorage.setItem("myCode", code);
-      alert("Code saved!");
-    }
-
-    function loadCode() {
-      const saved = localStorage.getItem("myCode");
-      if (saved) {
-        editor.setValue(saved);
-      }
+      const result = await response.text();
+      document.getElementById("output").innerText = result;
     }
   </script>
 </body>
